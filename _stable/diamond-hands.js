@@ -78,7 +78,7 @@ export async function main(ns) {
 					const sharesWeCanBuy = Math.floor((money - fees) / stock.askPrice);
 					const sharesToBuy = Math.min(stock.maxShares, sharesWeCanBuy);
 					if (ns.stock.buyStock(stock.sym, sharesToBuy) > 0) {
-						ns.print(`WARN\t${stock.summary}\t- LONG @ \$${'$'+ ns.formatNumber(sharesToBuy, 2, 1000, false)}`);
+						ns.print(`WARN\t${stock.summary}\t- LONG @ \$${ns.formatNumber(sharesToBuy, 2, 1000, false)}`);
 					}
 				}
 			}
