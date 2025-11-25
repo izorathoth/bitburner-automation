@@ -46,8 +46,8 @@ export async function main(ns) {
 		if (stock.forecast > 0.5) {
 			// HOLD
 			const curValue = stock.cost + stock.profit
-			const roi = ns.nFormat(100 * (stock.profit / stock.cost), "0.00");
-			ns.print(`INFO\t ${stock.summary} LONG ${ns.nFormat(curValue, '0a')} ${roi}%`);
+			const roi = ns.formatNumber(100 * (stock.profit / stock.cost), "0.00");
+			ns.print(`INFO\t ${stock.summary} LONG \$${ns.formatNumber(curValue, 2, 1000, false)} ${roi}%`);
 			overallValue += curValue;
 		} else {
 			// Take tendies!
@@ -56,7 +56,7 @@ export async function main(ns) {
 			const saleCost = stock.longPrice * stock.longShares;
 			const saleProfit = saleTotal - saleCost - tradeFees;
 			stock.shares = 0;
-			ns.print(`WARN\t${stock.summary} SOLD for ${ns.nFormat(saleProfit, "$0.0a")} profit`);
+			ns.print(`WARN\t${stock.summary} SOLD for \$${ns.formatNumber(saleProfit, 2, 1000, false)} profit`);
 		}
 	}
 
@@ -70,7 +70,7 @@ export async function main(ns) {
 	}
 
 	function yolo(stocks) {
-		const riskThresh = 20 * fees;
+		const riskThresh = 100 * fees;
 		for (const stock of stocks) {
 			const money = ns.getPlayer().money * 0.25; //Limit the money used to 25% of player funds
 			if (stock.forecast > 0.55) {
@@ -78,7 +78,7 @@ export async function main(ns) {
 					const sharesWeCanBuy = Math.floor((money - fees) / stock.askPrice);
 					const sharesToBuy = Math.min(stock.maxShares, sharesWeCanBuy);
 					if (ns.stock.buyStock(stock.sym, sharesToBuy) > 0) {
-						ns.print(`WARN\t${stock.summary}\t- LONG @ ${ns.nFormat(sharesToBuy, "$0.0a")}`);
+						ns.print(`WARN\t${stock.summary}\t- LONG @ \$${'$'+ ns.formatNumber(sharesToBuy, 2, 1000, false)}`);
 					}
 				}
 			}
@@ -92,7 +92,7 @@ export async function main(ns) {
 		const stocks = getStonks();
 		takeTendies(stocks);
 		yolo(stocks);
-		ns.print("Stock value: " + ns.nFormat(overallValue, '$0.00a'));
+		ns.print("Stock value: \$" + ns.formatNumber(overallValue, 2, 1000, false));
 		ns.print("");
 		overallValue = 0;
 		// @TODO - Extend for market manipulation
